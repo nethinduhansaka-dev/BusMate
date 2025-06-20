@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- FIXED: Removed deprecated package attribute - now handled in build.gradle -->
+
+    <!-- Core Internet Permissions (No Duplicates) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- Location Permissions for Real-Time Bus Tracking (Lab Session 3) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <!-- Camera Permission for QR Code Scanning & Profile Photos -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Storage Permissions for Multimedia Integration (Lab Session 2) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <!-- Notification Permissions for Bus Arrival Alerts -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+
+
+    <!-- Microphone Permission for Voice Features -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Hardware Features Declaration -->
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.BusMate"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <!-- Google Maps API Key for Live Bus Tracking -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <!-- Google Play Services Version -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <!-- Main Activity - BusMate Entry Point -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Deep Link Support for BusMate Features -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                    android:host="busmate.app" />
+            </intent-filter>
+        </activity>
+
+        <!-- User Authentication Flow -->
+        <activity
+            android:name=".UserTypeSelectionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".SignInActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".UserTypeSelectionActivity" />
+
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".UserTypeSelectionActivity" />
+
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".SignInActivity" />
+
+        <activity
+            android:name=".OtpVerificationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.BusMate" />
+
+        <activity
+            android:name=".VerificationSuccessActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate" />
+
+        <!-- Bus Operator Registration -->
+        <activity
+            android:name=".BusOperatorRegistrationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".UserTypeSelectionActivity" />
+
+        <!-- Bus Operator Dashboard & Management -->
+        <activity
+            android:name=".BusOperatorDashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".BusOperatorMoreActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".BusOperatorDashboardActivity" />
+
+        <!-- Passenger Dashboard & Features -->
+        <activity
+            android:name=".PassengerDashboardActivity"
+            android:exported="false"
+
+            android:theme="@style/Theme.BusMate"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".MoreActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".PassengerDashboardActivity" />
+
+        <!-- Real-Time Bus Tracking System (Lab Session 3) -->
+        <activity
+            android:name=".LiveBusTrackingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".PassengerDashboardActivity" />
+
+        <activity
+            android:name=".BusRouteInformationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".LiveBusTrackingActivity" />
+
+        <activity
+            android:name=".BusArrivalInterfaceActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".LiveBusTrackingActivity" />
+
+        <!-- Communication Features -->
+        <activity
+            android:name=".DriverCommunicationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.BusMate" />
+
+        <!-- Bus Information & Details -->
+        <activity
+            android:name=".BusDetailsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate" />
+
+        <activity
+            android:name=".CapacityMonitorActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate" />
+
+
+
+        <!-- File Provider for Image/Document Sharing -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.s23010421.busmate.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
+
+    </application>
+
+</manifest>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="24dp"
+    android:viewportWidth="160"
+    android:viewportHeight="24">
+
+    <!-- "Smart Bus Travel Assistant" text -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,6V18H6V10H4V18H2V6H4V8H6V6H8Z" />
+
+    <!-- Add more text elements for tagline -->
+
+</vector>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#FFFFFF"
+    android:gravity="center">
+
+    <!-- Header Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BusMate"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smart Bus Travel Assistant"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="40dp" />
+
+    <!-- Success Message -->
+    <TextView
+        android:id="@+id/textViewSuccessMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Verification Successful!\n\nYour email has been verified successfully. You can now create a new password for your account."
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:gravity="center"
+        android:layout_marginBottom="40dp" />
+
+    <!-- New Password Input -->
+    <EditText
+        android:id="@+id/editTextNewPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Enter your new password"
+        android:inputType="textPassword"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Confirm Password Input -->
+    <EditText
+        android:id="@+id/editTextConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Confirm your new password"
+        android:inputType="textPassword"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Password Requirements -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Password must be at least 6 characters long and contain both letters and numbers."
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Reset Password Button -->
+    <Button
+        android:id="@+id/buttonResetPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Reset Password"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_primary_background"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#FFFFFF">
+
+    <!-- Back Button -->
+    <TextView
+        android:id="@+id/textViewBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← Back"
+        android:textColor="#007BFF"
+        android:textSize="16sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BusMate"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Smart Bus Travel Assistant"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Verification Code"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+
+    <!-- Email Description -->
+    <TextView
+        android:id="@+id/textViewEmailDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="We've sent a 6-digit verification code to your email address. Please enter it below."
+        android:textSize="16sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <!-- OTP Input Fields -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <EditText
+            android:id="@+id/editTextOtpDigit1"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextOtpDigit2"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextOtpDigit3"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextOtpDigit4"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextOtpDigit5"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextOtpDigit6"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Countdown Timer -->
+    <TextView
+        android:id="@+id/textViewCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="#666666"
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Resend Code -->
+    <TextView
+        android:id="@+id/textViewResendCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Didn't receive the code? Resend Code"
+        android:textColor="#007BFF"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Verify Button -->
+    <Button
+        android:id="@+id/buttonVerifyCode"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Verify Code"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_primary_background"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

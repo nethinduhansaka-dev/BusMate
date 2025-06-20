@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">BusMate</string>
+    <string name="already_have_account">Already have an account? <font color="#007BFF">Sign In</font></string>
+
+
+    <string name="google_maps_key">YOUR_GOOGLE_MAPS_API_KEY_HERE</string>
+
+    <!-- Navigation strings -->
+    <string name="track_bus_short">Track Bus</string>
+    <string name="track_bus_long">Track live bus location</string>
+    <string name="emergency_short">Emergency</string>
+    <string name="emergency_long">Emergency assistance</string>
+
+</resources>
+
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base BusMate Theme -->
+    <style name="Theme.BusMate" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryVariant">#333333</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#666666</item>
+        <item name="colorSecondaryVariant">#999999</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- FIXED: BusMate Splash Screen Theme -->
+    <style name="Theme.BusMate.Splash" parent="Theme.SplashScreen">
+        <!-- Splash Screen Background Color -->
+        <item name="windowSplashScreenBackground">#000000</item>
+
+        <!-- App Icon for Splash Screen -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_busmate_splash_logo</item>
+
+        <!-- Animation Duration -->
+        <item name="windowSplashScreenAnimationDuration">2000</item>
+
+        <!-- Theme to apply after splash screen -->
+        <item name="postSplashScreenTheme">@style/Theme.BusMate</item>
+
+        <!-- System UI Configuration -->
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Emergency Theme -->
+    <style name="Theme.BusMate.Emergency" parent="Theme.BusMate">
+        <item name="colorPrimary">#CC0000</item>
+        <item name="android:statusBarColor">#CC0000</item>
+    </style>
+
+</resources>

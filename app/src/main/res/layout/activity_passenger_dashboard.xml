@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F7">
+
+    <!-- Main Scroll Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="20dp">
+
+            <!-- Enhanced Header Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
+
+                    <!-- Greeting and User Info -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/textViewGreeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Good Morning,"
+                            android:textSize="16sp"
+                            android:textColor="#8E8E93"
+                            android:fontFamily="sans-serif-medium" />
+
+                        <TextView
+                            android:id="@+id/textViewPassengerName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="BusMate User"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            android:textColor="#1C1C1E"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="sans-serif-black" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="8dp">
+
+                            <TextView
+                                android:id="@+id/textViewCurrentLocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📍 Getting location..."
+                                android:textSize="14sp"
+                                android:textColor="#8E8E93"
+                                android:fontFamily="sans-serif-medium" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/textViewCurrentWeather"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⛅ Loading weather..."
+                            android:textSize="13sp"
+                            android:textColor="#8E8E93"
+                            android:layout_marginTop="4dp"
+                            android:background="#F0F0F0"
+                            android:padding="8dp"
+                            android:fontFamily="sans-serif" />
+
+                    </LinearLayout>
+
+                    <!-- Enhanced Profile Picture -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        app:cardCornerRadius="35dp"
+                        app:cardElevation="6dp"
+                        android:layout_marginStart="16dp">
+
+                        <ImageView
+                            android:id="@+id/imageViewPassengerPhoto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_profile_placeholder"
+                            android:scaleType="centerCrop"
+                            android:background="#E8E8E8" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Quick Actions Section Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Quick Actions"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#1C1C1E"
+                    android:fontFamily="sans-serif-black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✨ Shortcuts"
+                    android:textSize="12sp"
+                    android:textColor="#007AFF"
+                    android:background="#E3F2FD"
+                    android:paddingStart="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="6dp"
+                    android:fontFamily="sans-serif-medium" />
+
+            </LinearLayout>
+
+            <!-- Enhanced Quick Actions Grid -->
+            <androidx.gridlayout.widget.GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                app:columnCount="2"
+                app:rowCount="2"
+                app:alignmentMode="alignBounds"
+                app:useDefaultMargins="true">
+
+                <!-- Find Bus Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewFindBus"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="6dp"
+                    app:layout_columnWeight="1"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="20dp"
+                        android:background="#000000">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_bus_white"
+                            android:layout_marginBottom="8dp"
+                            android:scaleType="centerInside" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Find Bus"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF"
+                            android:gravity="center"
+                            android:fontFamily="sans-serif-black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Real-time tracking"
+                            android:textSize="11sp"
+                            android:textColor="#E8E8E8"
+                            android:gravity="center"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="sans-serif" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Buy Ticket Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewBuyTicket"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="6dp"
+                    app:layout_columnWeight="1"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="20dp"
+                        android:background="#F8F9FA">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_ticket"
+                            android:layout_marginBottom="8dp"
+                            android:scaleType="centerInside" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Buy Ticket"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#1C1C1E"
+                            android:gravity="center"
+                            android:fontFamily="sans-serif-black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Digital payments"
+                            android:textSize="11sp"
+                            android:textColor="#8E8E93"
+                            android:gravity="center"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="sans-serif" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Trip History Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewTripHistory"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="6dp"
+                    app:layout_columnWeight="1"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="20dp"
+                        android:background="#F8F9FA">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_history"
+                            android:layout_marginBottom="8dp"
+                            android:scaleType="centerInside" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Trip History"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#1C1C1E"
+                            android:gravity="center"
+                            android:fontFamily="sans-serif-black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View past trips"
+                            android:textSize="11sp"
+                            android:textColor="#8E8E93"
+                            android:gravity="center"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="sans-serif" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Emergency Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewEmergency"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="6dp"
+                    app:layout_columnWeight="1"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="20dp"
+                        android:background="#FF3B30">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_emergency"
+                            android:layout_marginBottom="8dp"
+                            android:scaleType="centerInside" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Emergency"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#FFFFFF"
+                            android:gravity="center"
+                            android:fontFamily="sans-serif-black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24/7 support"
+                            android:textSize="11sp"
+                            android:textColor="#FFE6E6"
+                            android:gravity="center"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="sans-serif" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.gridlayout.widget.GridLayout>
+
+            <!-- SIMPLIFIED: Nearby Buses Section with TextViews -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Section Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/textViewNearbyBusesTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nearby Buses"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="#1C1C1E"
+                                android:fontFamily="sans-serif-black" />
+
+                            <View
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                android:layout_marginStart="8dp"
+                                android:background="#34C759" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔄 Live Updates"
+                            android:textSize="12sp"
+                            android:textColor="#34C759"
+                            android:background="#E8F5E8"
+                            android:paddingStart="12dp"
+                            android:paddingTop="6dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="6dp"
+                            android:fontFamily="sans-serif-medium" />
+
+                    </LinearLayout>
+
+                    <!-- SIMPLIFIED: Nearby Buses as Simple TextViews -->
+                    <LinearLayout
+                        android:id="@+id/layoutNearbyBuses"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <!-- Bus 1 -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="3dp"
+                            app:cardBackgroundColor="#F8F9FA">
+
+                            <TextView
+                                android:id="@+id/textViewNearbyBus1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="🚌 Route 245 - Colombo Express • Arrives in 3 min • 78% Full"
+                                android:textSize="14sp"
+                                android:textColor="#1C1C1E"
+                                android:padding="16dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:fontFamily="sans-serif-medium" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Bus 2 -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="3dp"
+                            app:cardBackgroundColor="#F8F9FA">
+
+                            <TextView
+                                android:id="@+id/textViewNearbyBus2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="🚌 Route 187 - Airport Express • Arrives in 7 min • 45% Full"
+                                android:textSize="14sp"
+                                android:textColor="#1C1C1E"
+                                android:padding="16dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:fontFamily="sans-serif-medium" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Bus 3 -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="3dp"
+                            app:cardBackgroundColor="#F8F9FA">
+
+                            <TextView
+                                android:id="@+id/textViewNearbyBus3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="🚌 Route 138 - Kandy Express • Arrives in 12 min • 92% Full"
+                                android:textSize="14sp"
+                                android:textColor="#1C1C1E"
+                                android:padding="16dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:fontFamily="sans-serif-medium" />
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <!-- REMOVED: RecyclerView - No longer needed -->
+                    <!-- <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewNearbyBuses"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone" /> -->
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Live Bus Updates Section -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewLiveBusUpdates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🔔 Live Bus Alerts"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#1C1C1E"
+                            android:fontFamily="sans-serif-black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Now"
+                            android:textSize="12sp"
+                            android:textColor="#8E8E93"
+                            android:fontFamily="sans-serif" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textViewBusArrivalNotification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Bus #245 arriving in 3 minutes at Central Station"
+                        android:textSize="16sp"
+                        android:textColor="#FF9500"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <Button
+                        android:id="@+id/buttonTrackBus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Track This Bus"
+                        android:textSize="14sp"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/button_primary_gradient"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:fontFamily="sans-serif-medium" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Enhanced Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationPassenger"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        app:elevation="12dp"
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:labelVisibilityMode="labeled"
+        app:itemRippleColor="@color/black" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
