@@ -173,6 +173,62 @@
             android:theme="@style/Theme.BusMate"
             android:parentActivityName=".PassengerDashboardActivity" />
 
+        <!-- Profile Activity -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".PassengerDashboardActivity" />
+
+        <activity
+            android:name=".TicketBookingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".PassengerDashboardActivity" />
+
+        <!-- Add these activities inside the <application> tag -->
+        <activity
+            android:name=".PaymentActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".TicketBookingActivity" />
+
+        <activity
+            android:name=".PaymentSuccessActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".PaymentActivity" />
+
+        <!-- Add these activities inside the <application> tag -->
+        <activity
+            android:name=".TripHistoryActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".PassengerDashboardActivity" />
+
+        <activity
+            android:name=".ReceiptActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".TripHistoryActivity" />
+
+        <!-- Add EmergencyActivity -->
+        <activity
+            android:name=".EmergencyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:taskAffinity="com.s23010421.busmate.emergency"
+            android:excludeFromRecents="false" />
+
+
+
         <!-- Real-Time Bus Tracking System (Lab Session 3) -->
         <activity
             android:name=".LiveBusTrackingActivity"
@@ -215,6 +271,7 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.BusMate" />
+
 
 
 

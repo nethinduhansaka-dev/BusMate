@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="40dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/textViewReceiptTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trip Receipt"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="sans-serif-black" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:elevation="8dp"
+        android:radius="16dp">
+
+        <TextView
+            android:id="@+id/textViewReceiptDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Receipt Details"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:padding="20dp"
+            android:fontFamily="sans-serif" />
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/buttonClose"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Close"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="#000000"
+        android:fontFamily="sans-serif-black" />
+
+</LinearLayout>
