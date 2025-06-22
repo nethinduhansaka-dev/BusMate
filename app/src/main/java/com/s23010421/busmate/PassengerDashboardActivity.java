@@ -562,7 +562,7 @@ public class PassengerDashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * Update bus display with real-time data
+     * Update bus display with live dot indicator
      */
     private void updateBusDisplay() {
         try {
@@ -571,14 +571,21 @@ public class PassengerDashboardActivity extends AppCompatActivity {
 
             if (nearbyBuses.isEmpty()) {
                 showNoBusesFound();
+                showLiveUpdateIndicator(false);
                 return;
             }
 
-            // Add each bus as a card
+            // Add each bus as a card with light theme styling
             for (RealtimeBusInfo bus : nearbyBuses) {
-                View busCard = createBusCard(bus);
+                View busCard = createBusCardLightTheme(bus);
                 layoutBusList.addView(busCard);
             }
+
+            // Show live update dot to indicate fresh data
+            showLiveUpdateIndicator(true);
+
+            // Hide dot after 3 seconds
+            mainHandler.postDelayed(() -> showLiveUpdateIndicator(false), 3000);
 
             // Update bus count in notification
             updateBusArrivalNotification();
@@ -589,13 +596,15 @@ public class PassengerDashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * Create a card view for each bus
+     * Create bus card with light theme (black and white)
      */
-    private View createBusCard(RealtimeBusInfo bus) {
+    private View createBusCardLightTheme(RealtimeBusInfo bus) {
         LinearLayout cardLayout = new LinearLayout(this);
         cardLayout.setOrientation(LinearLayout.VERTICAL);
         cardLayout.setPadding(16, 12, 16, 12);
-        cardLayout.setBackground(ContextCompat.getDrawable(this, android.R.drawable.dialog_holo_light_frame));
+
+        // Light theme styling - white background with black border
+        cardLayout.setBackgroundColor(getResources().getColor(android.R.color.white));
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -609,6 +618,7 @@ public class PassengerDashboardActivity extends AppCompatActivity {
         routeText.setText("🚌 Route " + bus.routeNumber + " → " + bus.destination);
         routeText.setTextSize(16);
         routeText.setTextColor(getResources().getColor(android.R.color.black));
+        routeText.setTypeface(null, android.graphics.Typeface.BOLD);
         cardLayout.addView(routeText);
 
         // Arrival time and capacity
@@ -622,22 +632,97 @@ public class PassengerDashboardActivity extends AppCompatActivity {
         // Click listener to track this bus
         cardLayout.setOnClickListener(v -> trackBus(bus));
 
-        // Color coding based on arrival time
+        // Light theme color coding - subtle borders instead of background colors
         if (bus.arrivalMinutes <= 3) {
-            cardLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            // Green border for urgent buses
+            cardLayout.setBackground(createColorBorder("#4CAF50"));
         } else if (bus.arrivalMinutes <= 8) {
-            cardLayout.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
+            // Orange border for moderately urgent buses
+            cardLayout.setBackground(createColorBorder("#FF9800"));
+        } else {
+            // Gray border for normal buses
+            cardLayout.setBackground(createColorBorder("#E0E0E0"));
         }
 
         return cardLayout;
     }
 
     /**
-     * Show loading state for buses
+     * Create colored border for light theme
+     */
+    private android.graphics.drawable.Drawable createColorBorder(String color) {
+        try {
+            android.graphics.drawable.GradientDrawable drawable = new android.graphics.drawable.GradientDrawable();
+            drawable.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+            drawable.setColor(getResources().getColor(android.R.color.white));
+            drawable.setStroke(3, android.graphics.Color.parseColor(color));
+            drawable.setCornerRadius(8);
+            return drawable;
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating colored border: " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Show/hide live update dot without changing background.
+     * This method controls the visibility and animation of the live update indicator dot.
+     * Call with 'true' to show and animate the dot, or 'false' to hide it.
+     */
+    private void showLiveUpdateIndicator(boolean show) {
+        try {
+            View liveUpdateDot = findViewById(R.id.liveUpdateDot);
+            if (liveUpdateDot != null) {
+                liveUpdateDot.setVisibility(show ? View.VISIBLE : View.GONE);
+
+                // Always bring the dot to front for visibility
+                if (show) {
+                    liveUpdateDot.bringToFront();
+                    animateLiveUpdateDot(liveUpdateDot);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing live update indicator: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Animate the live update dot
+     */
+    private void animateLiveUpdateDot(View dot) {
+        try {
+            // Simple pulse animation
+            dot.animate()
+                .scaleX(1.2f)
+                .scaleY(1.2f)
+                .setDuration(500)
+                .withEndAction(() -> {
+                    dot.animate()
+                        .scaleX(1.0f)
+                        .scaleY(1.0f)
+                        .setDuration(500)
+                        .start();
+                })
+                .start();
+        } catch (Exception e) {
+            Log.e(TAG, "Error animating dot: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Enhanced bus loading state with dot indicator
      */
     private void showBusLoadingState(boolean show) {
-        if (progressBarBuses != null) {
-            progressBarBuses.setVisibility(show ? View.VISIBLE : View.GONE);
+        try {
+            if (progressBarBuses != null) {
+                progressBarBuses.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+
+            // Show live update dot during loading
+            showLiveUpdateIndicator(show);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing bus loading state: " + e.getMessage(), e);
         }
     }
 
@@ -729,12 +814,20 @@ public class PassengerDashboardActivity extends AppCompatActivity {
      * Refresh bus data manually
      */
     private void refreshBusData() {
-        if (currentLocation != null) {
-            fetchRealTimeBusData();
-            Toast.makeText(this, "🔄 Refreshing bus data...", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "📍 Getting location first...", Toast.LENGTH_SHORT).show();
-            getCurrentLocation();
+        try {
+            if (currentLocation != null) {
+                // Show live update dot immediately
+                showLiveUpdateIndicator(true);
+
+                fetchRealTimeBusData();
+                Toast.makeText(this, "🔄 Refreshing bus data...", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "📍 Getting location first...", Toast.LENGTH_SHORT).show();
+                getCurrentLocation();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error refreshing bus data: " + e.getMessage(), e);
+            showLiveUpdateIndicator(false);
         }
     }
 

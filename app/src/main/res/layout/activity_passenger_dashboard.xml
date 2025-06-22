@@ -109,7 +109,7 @@
                             android:id="@+id/imageViewPassengerPhoto"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/ic_profile_placeholder"
+                            android:src="@android:drawable/ic_menu_gallery"
                             android:scaleType="centerCrop"
                             android:background="#E8E8E8" />
 
@@ -183,12 +183,12 @@
                         android:padding="20dp"
                         android:background="#000000">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_bus_white"
-                            android:layout_marginBottom="8dp"
-                            android:scaleType="centerInside" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🚌"
+                            android:textSize="40sp"
+                            android:layout_marginBottom="8dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -235,12 +235,12 @@
                         android:padding="20dp"
                         android:background="#F8F9FA">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_ticket"
-                            android:layout_marginBottom="8dp"
-                            android:scaleType="centerInside" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎫"
+                            android:textSize="40sp"
+                            android:layout_marginBottom="8dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -287,12 +287,12 @@
                         android:padding="20dp"
                         android:background="#F8F9FA">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_history"
-                            android:layout_marginBottom="8dp"
-                            android:scaleType="centerInside" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📋"
+                            android:textSize="40sp"
+                            android:layout_marginBottom="8dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -339,12 +339,12 @@
                         android:padding="20dp"
                         android:background="#FF3B30">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_emergency"
-                            android:layout_marginBottom="8dp"
-                            android:scaleType="centerInside" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🚨"
+                            android:textSize="40sp"
+                            android:layout_marginBottom="8dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -372,8 +372,7 @@
 
             </androidx.gridlayout.widget.GridLayout>
 
-            <!-- Updated Nearby Buses Section to match Java implementation -->
-
+            <!-- FIXED: Nearby Buses Section to Match Java Code Structure -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -388,7 +387,7 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <!-- Section Header -->
+                    <!-- Section Header with Live Updates Badge -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -396,25 +395,17 @@
                         android:gravity="center_vertical"
                         android:layout_marginBottom="20dp">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/textViewNearbyBusesTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:id="@+id/textViewNearbyBusesTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Nearby Buses"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
-                                android:textColor="#000000"
-                                android:fontFamily="sans-serif-black"
-                                android:letterSpacing="0.02" />
-
-                        </LinearLayout>
+                            android:text="Nearby Buses"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="#000000"
+                            android:fontFamily="sans-serif-black"
+                            android:letterSpacing="0.02" />
 
                         <!-- Live Updates Status Badge -->
                         <LinearLayout
@@ -448,94 +439,38 @@
 
                     </LinearLayout>
 
-                    <!-- Dynamic Nearby Buses Layout -->
-                    <LinearLayout
-                        android:id="@+id/layoutNearbyBuses"
+                    <!-- FIXED: Dynamic Container for Java Code to Add Components -->
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_height="wrap_content">
 
-                        <!-- Progress Bar -->
-                        <ProgressBar
-                            android:id="@+id/progressBarBuses"
-                            style="?android:attr/progressBarStyle"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
+                        <!-- Empty Container Where Java Code Will Add Components -->
+                        <LinearLayout
+                            android:id="@+id/layoutNearbyBuses"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                        <!-- Live Update Dot (positioned over the container) -->
+                        <View
+                            android:id="@+id/liveUpdateDot"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@drawable/live_update_dot"
                             android:visibility="gone"
-                            android:layout_margin="20dp"
-                            android:indeterminateTint="#000000" />
+                            android:elevation="4dp" />
 
-                        <!-- Dynamic Bus List Container with Black Border and Live Update Dot -->
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp">
-
-                            <!-- Bus List Container with Black Border -->
-                            <LinearLayout
-                                android:id="@+id/layoutBusList"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:background="@drawable/bus_list_black_border"
-                                android:padding="16dp" />
-
-                            <!-- Live Update Dot (positioned over the container) -->
-                            <View
-                                android:id="@+id/liveUpdateDot"
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginTop="12dp"
-                                android:layout_marginEnd="12dp"
-                                android:background="@drawable/live_update_dot"
-                                android:visibility="gone"
-                                android:elevation="4dp" />
-
-                        </RelativeLayout>
-
-                        <!-- Refresh Button -->
-                        <Button
-                            android:id="@+id/buttonRefreshBuses"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:text="🔄 Refresh Buses"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="12dp"
-                            android:background="@drawable/refresh_button_black"
-                            android:textColor="#FFFFFF"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
-                            android:letterSpacing="0.02"
-                            android:elevation="2dp" />
-
-                        <!-- Last Update Time -->
-                        <TextView
-                            android:id="@+id/textViewLastUpdate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Last updated: --:--"
-                            android:textSize="13sp"
-                            android:textColor="#666666"
-                            android:gravity="center"
-                            android:layout_marginTop="8dp"
-                            android:fontFamily="sans-serif-medium" />
-
-                    </LinearLayout>
+                    </RelativeLayout>
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-
-
-
-
+            <!-- Live Bus Updates Section -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewLiveBusUpdates"
                 android:layout_width="match_parent"
@@ -598,7 +533,7 @@
                         android:text="Track This Bus"
                         android:textSize="14sp"
                         android:textColor="#FFFFFF"
-                        android:background="@drawable/button_primary_gradient"
+                        android:background="#007BFF"
                         android:paddingStart="20dp"
                         android:paddingEnd="20dp"
                         android:fontFamily="sans-serif-medium" />
@@ -620,9 +555,6 @@
         android:background="#FFFFFF"
         app:elevation="12dp"
         app:menu="@menu/bottom_navigation_menu"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:itemRippleColor="@color/black" />
+        app:labelVisibilityMode="labeled" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
