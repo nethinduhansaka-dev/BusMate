@@ -15,14 +15,15 @@
         android:background="#FFFFFF"
         android:elevation="4dp">
 
-
         <Button
             android:id="@+id/buttonBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/ic_arrow_back"
-            android:contentDescription="Back" />
-
+            android:text="←"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-medium" />
 
         <TextView
             android:layout_width="0dp"
@@ -66,6 +67,39 @@
                 android:background="#FF0000"
                 android:layout_marginBottom="24dp"
                 android:fontFamily="sans-serif-black" />
+
+            <!-- Motion Status Indicators (Fixed for Accelerometer) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textViewShakeAlert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🚨 Shake Alert"
+                    android:textSize="16sp"
+                    android:textColor="#FF0000"
+                    android:visibility="gone"
+                    android:padding="8dp"
+                    android:background="#FFEBEE"
+                    android:fontFamily="sans-serif-black" />
+
+                <TextView
+                    android:id="@+id/textViewMotionStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📱 Motion Status"
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:visibility="gone"
+                    android:padding="8dp"
+                    android:fontFamily="sans-serif" />
+
+            </LinearLayout>
 
             <!-- Emergency Instructions -->
             <androidx.cardview.widget.CardView
@@ -223,7 +257,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="📍 Negombo, Western Province\nAccuracy: ±5 meters • Last updated: Now"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textColor="#000000"
                         android:layout_marginBottom="16dp"
                         android:fontFamily="sans-serif" />
@@ -234,12 +268,6 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <Switch
-                            android:id="@+id/switchShareLocation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="12dp" />
-
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -247,7 +275,12 @@
                             android:text="Share location with emergency contacts"
                             android:textSize="14sp"
                             android:textColor="#000000"
-                            android:fontFamily="sans-serif-medium" />
+                            android:fontFamily="sans-serif" />
+
+                        <Switch
+                            android:id="@+id/switchShareLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
 
@@ -269,10 +302,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="32dp">
+                android:orientation="vertical">
 
-                <!-- First Row: Bus Issue and Safety Concern -->
+                <!-- First Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -282,32 +314,30 @@
                     <Button
                         android:id="@+id/buttonBusIssue"
                         android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
                         android:text="🚌 Bus Issue"
                         android:textSize="14sp"
                         android:textColor="#000000"
-                        android:background="@drawable/emergency_button_border"
-                        android:gravity="center"
+                        android:background="@drawable/incident_button_border"
                         android:fontFamily="sans-serif-medium" />
 
                     <Button
                         android:id="@+id/buttonSafetyConcern"
                         android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
-                        android:text="🛡️ Safety Concern"
+                        android:text="⚠️ Safety Concern"
                         android:textSize="14sp"
                         android:textColor="#000000"
-                        android:background="@drawable/emergency_button_border"
-                        android:gravity="center"
+                        android:background="@drawable/incident_button_border"
                         android:fontFamily="sans-serif-medium" />
 
                 </LinearLayout>
 
-                <!-- Second Row: Road Block and Other -->
+                <!-- Second Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -316,70 +346,30 @@
                     <Button
                         android:id="@+id/buttonRoadBlock"
                         android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
                         android:text="🚧 Road Block"
                         android:textSize="14sp"
                         android:textColor="#000000"
-                        android:background="@drawable/emergency_button_border"
-                        android:gravity="center"
+                        android:background="@drawable/incident_button_border"
                         android:fontFamily="sans-serif-medium" />
 
                     <Button
                         android:id="@+id/buttonOther"
                         android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
-                        android:text="📞 Other"
+                        android:text="📝 Other"
                         android:textSize="14sp"
                         android:textColor="#000000"
-                        android:background="@drawable/emergency_button_border"
-                        android:gravity="center"
+                        android:background="@drawable/incident_button_border"
                         android:fontFamily="sans-serif-medium" />
 
                 </LinearLayout>
 
             </LinearLayout>
-
-            <!-- Safety Tips -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="#E3F2FD">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🛡️ Safety Tips"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#1976D2"
-                        android:layout_marginBottom="12dp"
-                        android:fontFamily="sans-serif-black" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="• Always inform someone about your travel plans\n• Keep your phone charged during travel\n• Stay aware of your surroundings\n• Trust your instincts if something feels wrong"
-                        android:textSize="14sp"
-                        android:textColor="#000000"
-                        android:lineSpacingExtra="4dp"
-                        android:fontFamily="sans-serif" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
