@@ -372,20 +372,21 @@
 
             </androidx.gridlayout.widget.GridLayout>
 
-            <!-- SIMPLIFIED: Nearby Buses Section with TextViews -->
+            <!-- Updated Nearby Buses Section to match Java implementation -->
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="8dp"
                 app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="24dp">
 
                     <!-- Section Header -->
                     <LinearLayout
@@ -393,7 +394,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="20dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -407,129 +408,134 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Nearby Buses"
-                                android:textSize="20sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold"
-                                android:textColor="#1C1C1E"
-                                android:fontFamily="sans-serif-black" />
-
-                            <View
-                                android:layout_width="8dp"
-                                android:layout_height="8dp"
-                                android:layout_marginStart="8dp"
-                                android:background="#34C759" />
+                                android:textColor="#000000"
+                                android:fontFamily="sans-serif-black"
+                                android:letterSpacing="0.02" />
 
                         </LinearLayout>
 
-                        <TextView
+                        <!-- Live Updates Status Badge -->
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="🔄 Live Updates"
-                            android:textSize="12sp"
-                            android:textColor="#34C759"
-                            android:background="#E8F5E8"
-                            android:paddingStart="12dp"
-                            android:paddingTop="6dp"
-                            android:paddingEnd="12dp"
-                            android:paddingBottom="6dp"
-                            android:fontFamily="sans-serif-medium" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/status_badge_background"
+                            android:paddingStart="14dp"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="14dp"
+                            android:paddingBottom="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🔄"
+                                android:textSize="12sp"
+                                android:layout_marginEnd="6dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Live Updates"
+                                android:textSize="12sp"
+                                android:textColor="#000000"
+                                android:textStyle="bold"
+                                android:fontFamily="sans-serif-medium" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                    <!-- SIMPLIFIED: Nearby Buses as Simple TextViews -->
+                    <!-- Dynamic Nearby Buses Layout -->
                     <LinearLayout
                         android:id="@+id/layoutNearbyBuses"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="16dp">
 
-                        <!-- Bus 1 -->
-                        <androidx.cardview.widget.CardView
+                        <!-- Progress Bar -->
+                        <ProgressBar
+                            android:id="@+id/progressBarBuses"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:layout_margin="20dp"
+                            android:indeterminateTint="#000000" />
+
+                        <!-- Dynamic Bus List Container with Black Border and Live Update Dot -->
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="3dp"
-                            app:cardBackgroundColor="#F8F9FA">
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp">
 
-                            <TextView
-                                android:id="@+id/textViewNearbyBus1"
+                            <!-- Bus List Container with Black Border -->
+                            <LinearLayout
+                                android:id="@+id/layoutBusList"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="🚌 Route 245 - Colombo Express • Arrives in 3 min • 78% Full"
-                                android:textSize="14sp"
-                                android:textColor="#1C1C1E"
-                                android:padding="16dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                android:fontFamily="sans-serif-medium" />
+                                android:orientation="vertical"
+                                android:background="@drawable/bus_list_black_border"
+                                android:padding="16dp" />
 
-                        </androidx.cardview.widget.CardView>
+                            <!-- Live Update Dot (positioned over the container) -->
+                            <View
+                                android:id="@+id/liveUpdateDot"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginEnd="12dp"
+                                android:background="@drawable/live_update_dot"
+                                android:visibility="gone"
+                                android:elevation="4dp" />
 
-                        <!-- Bus 2 -->
-                        <androidx.cardview.widget.CardView
+                        </RelativeLayout>
+
+                        <!-- Refresh Button -->
+                        <Button
+                            android:id="@+id/buttonRefreshBuses"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:text="🔄 Refresh Buses"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/refresh_button_black"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
+                            android:letterSpacing="0.02"
+                            android:elevation="2dp" />
+
+                        <!-- Last Update Time -->
+                        <TextView
+                            android:id="@+id/textViewLastUpdate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="3dp"
-                            app:cardBackgroundColor="#F8F9FA">
-
-                            <TextView
-                                android:id="@+id/textViewNearbyBus2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="🚌 Route 187 - Airport Express • Arrives in 7 min • 45% Full"
-                                android:textSize="14sp"
-                                android:textColor="#1C1C1E"
-                                android:padding="16dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                android:fontFamily="sans-serif-medium" />
-
-                        </androidx.cardview.widget.CardView>
-
-                        <!-- Bus 3 -->
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="3dp"
-                            app:cardBackgroundColor="#F8F9FA">
-
-                            <TextView
-                                android:id="@+id/textViewNearbyBus3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="🚌 Route 138 - Kandy Express • Arrives in 12 min • 92% Full"
-                                android:textSize="14sp"
-                                android:textColor="#1C1C1E"
-                                android:padding="16dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                android:fontFamily="sans-serif-medium" />
-
-                        </androidx.cardview.widget.CardView>
+                            android:text="Last updated: --:--"
+                            android:textSize="13sp"
+                            android:textColor="#666666"
+                            android:gravity="center"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-medium" />
 
                     </LinearLayout>
-
-                    <!-- REMOVED: RecyclerView - No longer needed -->
-                    <!-- <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewNearbyBuses"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:visibility="gone" /> -->
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Live Bus Updates Section -->
+
+
+
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewLiveBusUpdates"
                 android:layout_width="match_parent"

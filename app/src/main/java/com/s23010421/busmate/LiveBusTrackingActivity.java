@@ -1,498 +1,715 @@
 package com.s23010421.busmate;
 
 import android.Manifest;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.View;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * LiveBusTrackingActivity - Real-time bus tracking with Google Maps integration
- * Provides live bus locations, route visualization, and passenger communication
- * Implements comprehensive bus tracking features for BusMate passengers
+ * Enhanced LiveBusTrackingActivity with Real-Time Data Integration
+ * Supports multiple transit APIs for live bus tracking
  */
 public class LiveBusTrackingActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "LiveBusTracking";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private static final int LOCATION_UPDATE_INTERVAL = 10000; // 10 seconds
+    private static final int BUS_DATA_UPDATE_INTERVAL = 15000; // 15 seconds
+    private static final double SEARCH_RADIUS_KM = 2.0; // 2km radius
 
     // UI Components
     private GoogleMap mMap;
-    private TextView textViewSelectedRoute;
-    private TextView textViewBusNumber;
-    private TextView textViewDestination;
-    private TextView textViewCurrentCapacity;
-    private TextView textViewEstimatedArrival;
-    private TextView textViewNextStop;
-    private TextView textViewDistance;
-    private CardView cardViewBusInfo;
-    private Button buttonNotifyArrival;
-    private Button buttonShareLocation;
-    private Button buttonReportIssue;
-    private Button buttonContactDriver;
-    private Switch switchNotifications;
-    private LinearLayout layoutBusSelection;
+    private TextView textViewBusRoute;
+    private TextView textViewBusStatus;
+    private TextView textViewETA;
+    private TextView textViewNearbyBuses;
+    private Button buttonBack;
+    private Button buttonRefresh;
+    private ProgressBar progressBar;
 
-    // Location and Map
+    // Location Services
     private FusedLocationProviderClient fusedLocationClient;
-    private Location currentLocation;
-    private Marker selectedBusMarker;
-    private Marker userLocationMarker;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private LatLng currentUserLocation;
 
-    // Bus tracking data
-    private String selectedRouteNumber = "245";
-    private String selectedBusId = "WP-CM-5847";
-    private boolean isNotificationEnabled = false;
+    // Data Management
+    private ExecutorService executorService;
+    private Handler mainHandler;
+    private List<BusInfo> nearbyBuses;
+    private List<Marker> busMarkers;
+    private Circle searchRadiusCircle;
 
-    // Database and preferences
-    private DatabaseHelper databaseHelper;
-    private SharedPreferences sharedPreferences;
-    private static final String PREF_NAME = "BusMatePrefs";
+    // Bus Data
+    private String routeNumber;
+    private String destination;
+    private String busStop;
+    private String arrivalTime;
+
+    // Real-time tracking
+    private boolean isTrackingActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_live_bus_tracking);
 
-        // Initialize components
-        initializeViews();
-        initializeLocationServices();
-        setupClickListeners();
-        loadTrackingPreferences();
+        try {
+            Log.d(TAG, "Enhanced LiveBusTrackingActivity onCreate started");
+            setContentView(R.layout.activity_live_bus_tracking);
 
-        // Initialize map
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.mapFragment);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
+            // Initialize components
+            initializeComponents();
+            getBusDataFromIntent();
+            initializeViews();
+            initializeLocationServices();
+            setupGoogleMap();
+            setupClickListeners();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreate: " + e.getMessage(), e);
+            showErrorAndFinish("Error loading bus tracking");
         }
-
-        // Load initial bus data
-        loadBusTrackingData();
     }
 
     /**
-     * Initialize all UI components
+     * Initialize core components
+     */
+    private void initializeComponents() {
+        executorService = Executors.newFixedThreadPool(3);
+        mainHandler = new Handler(Looper.getMainLooper());
+        nearbyBuses = new ArrayList<>();
+        busMarkers = new ArrayList<>();
+
+        // Setup location request for real-time updates
+        locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(LOCATION_UPDATE_INTERVAL)
+                .setFastestInterval(5000);
+
+        // Location callback for continuous updates
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (locationResult.getLastLocation() != null) {
+                    Location location = locationResult.getLastLocation();
+                    currentUserLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+                    if (isTrackingActive) {
+                        updateUserLocationOnMap();
+                        fetchNearbyBuses();
+                    }
+                }
+            }
+        };
+    }
+
+    /**
+     * Get bus data from intent extras
+     */
+    private void getBusDataFromIntent() {
+        try {
+            routeNumber = getIntent().getStringExtra("route_number");
+            destination = getIntent().getStringExtra("destination");
+            busStop = getIntent().getStringExtra("bus_stop");
+            arrivalTime = getIntent().getStringExtra("arrival_time");
+
+            // Set defaults if data is missing
+            if (routeNumber == null) routeNumber = "Live Tracking";
+            if (destination == null) destination = "Real-time Bus Data";
+            if (busStop == null) busStop = "Your Location";
+            if (arrivalTime == null) arrivalTime = "Updating...";
+
+            Log.d(TAG, "Bus data loaded - Route: " + routeNumber + ", Destination: " + destination);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting bus data: " + e.getMessage(), e);
+            // Set default values
+            routeNumber = "Live Tracking";
+            destination = "Real-time Bus Data";
+            busStop = "Your Location";
+            arrivalTime = "Updating...";
+        }
+    }
+
+    /**
+     * Initialize UI components
      */
     private void initializeViews() {
-        textViewSelectedRoute = findViewById(R.id.textViewSelectedRoute);
-        textViewBusNumber = findViewById(R.id.textViewBusNumber);
-        textViewDestination = findViewById(R.id.textViewDestination);
-        textViewCurrentCapacity = findViewById(R.id.textViewCurrentCapacity);
-        textViewEstimatedArrival = findViewById(R.id.textViewEstimatedArrival);
-        textViewNextStop = findViewById(R.id.textViewNextStop);
-        textViewDistance = findViewById(R.id.textViewDistance);
-        cardViewBusInfo = findViewById(R.id.cardViewBusInfo);
-        buttonNotifyArrival = findViewById(R.id.buttonNotifyArrival);
-        buttonShareLocation = findViewById(R.id.buttonShareLocation);
-        buttonReportIssue = findViewById(R.id.buttonReportIssue);
-        buttonContactDriver = findViewById(R.id.buttonContactDriver);
-        switchNotifications = findViewById(R.id.switchNotifications);
-        layoutBusSelection = findViewById(R.id.layoutBusSelection);
+        try {
+            textViewBusRoute = findViewById(R.id.textViewBusRoute);
+            textViewBusStatus = findViewById(R.id.textViewBusStatus);
+            textViewETA = findViewById(R.id.textViewETA);
+            textViewNearbyBuses = findViewById(R.id.textViewNearbyBuses);
+            buttonBack = findViewById(R.id.buttonBack);
+            buttonRefresh = findViewById(R.id.buttonRefresh);
+            progressBar = findViewById(R.id.progressBar);
 
-        // Initialize database
-        databaseHelper = new DatabaseHelper(this);
-        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+            // Set initial information
+            updateUI();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing views: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Update UI with current data
+     */
+    private void updateUI() {
+        runOnUiThread(() -> {
+            try {
+                if (textViewBusRoute != null) {
+                    textViewBusRoute.setText(routeNumber + " - " + destination);
+                }
+                if (textViewBusStatus != null) {
+                    String status = isTrackingActive ? "🚌 Live Tracking Active" : "📍 Getting Location...";
+                    textViewBusStatus.setText(status);
+                }
+                if (textViewETA != null) {
+                    textViewETA.setText("ETA: " + arrivalTime);
+                }
+                if (textViewNearbyBuses != null) {
+                    textViewNearbyBuses.setText("Nearby Buses: " + nearbyBuses.size());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating UI: " + e.getMessage(), e);
+            }
+        });
     }
 
     /**
      * Initialize location services
      */
     private void initializeLocationServices() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        requestLocationPermission();
+        try {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        } catch (Exception e) {
+            Log.e(TAG, "Error initializing location services: " + e.getMessage(), e);
+        }
     }
 
     /**
-     * Set up click listeners for all interactive elements
+     * Setup Google Map
+     */
+    private void setupGoogleMap() {
+        try {
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            if (mapFragment != null) {
+                mapFragment.getMapAsync(this);
+            } else {
+                Log.e(TAG, "Map fragment not found");
+                showErrorAndFinish("Map not available");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up map: " + e.getMessage(), e);
+            showErrorAndFinish("Error loading map");
+        }
+    }
+
+    /**
+     * Setup click listeners
      */
     private void setupClickListeners() {
-        // Notify arrival toggle
-        buttonNotifyArrival.setOnClickListener(v -> toggleArrivalNotification());
-
-        // Share location
-        buttonShareLocation.setOnClickListener(v -> shareCurrentLocation());
-
-        // Report issue
-        buttonReportIssue.setOnClickListener(v -> reportBusIssue());
-
-        // Contact driver
-        buttonContactDriver.setOnClickListener(v -> contactBusDriver());
-
-        // Notification switch
-        switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            isNotificationEnabled = isChecked;
-            saveTrackingPreferences();
-            Toast.makeText(this, isChecked ? "Notifications enabled" : "Notifications disabled",
-                    Toast.LENGTH_SHORT).show();
-        });
-
-        // Bus info card click for details
-        cardViewBusInfo.setOnClickListener(v -> showBusDetails());
-    }
-
-    /**
-     * Request location permission
-     */
-    private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        } else {
-            getCurrentLocation();
-        }
-    }
-
-    /**
-     * Get current user location
-     */
-    private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            currentLocation = location;
-                            updateMapWithUserLocation();
-                        }
-                    }
+        try {
+            if (buttonBack != null) {
+                buttonBack.setOnClickListener(v -> {
+                    stopLocationUpdates();
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 });
+            }
+
+            if (buttonRefresh != null) {
+                buttonRefresh.setOnClickListener(v -> {
+                    refreshBusData();
+                });
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up click listeners: " + e.getMessage(), e);
+        }
     }
 
+    /**
+     * Google Maps callback - Enhanced with real-time features
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
+        try {
+            mMap = googleMap;
+            Log.d(TAG, "Google Map ready");
 
-        // Configure map settings
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setMapToolbarEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
+            // Configure map
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setCompassEnabled(true);
+            mMap.getUiSettings().setMapToolbarEnabled(true);
 
-        // Enable location layer if permission granted
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
+            // Check location permission and start tracking
+            checkLocationPermission();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onMapReady: " + e.getMessage(), e);
+            Toast.makeText(this, "Error loading map", Toast.LENGTH_SHORT).show();
         }
-
-        // Set map click listener for bus selection
-        mMap.setOnMarkerClickListener(marker -> {
-            if (marker.getTag() != null && marker.getTag().toString().startsWith("bus_")) {
-                selectBus(marker);
-                return true;
-            }
-            return false;
-        });
-
-        // Load initial map data
-        loadBusesOnMap();
-        centerMapOnRoute();
     }
 
     /**
-     * Load real-time bus data and display on map
+     * Check and request location permission
      */
-    private void loadBusesOnMap() {
-        // Simulated bus locations for Route 245
-        LatLng[] busLocations = {
-                new LatLng(6.9271, 79.8612), // Bus 1 - Near Negombo
-                new LatLng(6.9541, 79.8648), // Bus 2 - Ja-Ela
-                new LatLng(7.0873, 79.8956), // Bus 3 - Kelaniya
-                new LatLng(7.2906, 79.9085)  // Bus 4 - Near Colombo
-        };
+    private void checkLocationPermission() {
+        try {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                enableLocationTracking();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking location permission: " + e.getMessage(), e);
+        }
+    }
 
-        String[] busNumbers = {"WP-CM-5847", "WP-BM-2341", "WP-KB-8765", "WP-CD-1234"};
-        int[] capacities = {78, 45, 92, 56};
+    /**
+     * Enable real-time location tracking
+     */
+    private void enableLocationTracking() {
+        try {
+            if (mMap != null && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
 
-        for (int i = 0; i < busLocations.length; i++) {
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(busLocations[i])
-                    .title("Bus " + busNumbers[i])
-                    .snippet("Route 245 • " + capacities[i] + "% Full")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bus_marker));
+                mMap.setMyLocationEnabled(true);
+                startLocationUpdates();
+                isTrackingActive = true;
+                updateUI();
 
-            Marker marker = mMap.addMarker(markerOptions);
-            if (marker != null) {
-                marker.setTag("bus_" + busNumbers[i]);
+                Toast.makeText(this, "Starting live bus tracking...", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error enabling location tracking: " + e.getMessage(), e);
+        }
+    }
 
-                // Select first bus by default
-                if (i == 0) {
-                    selectedBusMarker = marker;
-                    selectBus(marker);
+    /**
+     * Start continuous location updates
+     */
+    private void startLocationUpdates() {
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+                fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+
+                // Get initial location
+                fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, location -> {
+                            if (location != null) {
+                                currentUserLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                centerMapOnUser();
+                                addSearchRadiusCircle();
+                                fetchNearbyBuses();
+                            }
+                        });
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting location updates: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Stop location updates
+     */
+    private void stopLocationUpdates() {
+        try {
+            if (fusedLocationClient != null && locationCallback != null) {
+                fusedLocationClient.removeLocationUpdates(locationCallback);
+                isTrackingActive = false;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error stopping location updates: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Center map on user location
+     */
+    private void centerMapOnUser() {
+        if (mMap != null && currentUserLocation != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentUserLocation, 15.0f));
+        }
+    }
+
+    /**
+     * Add search radius circle to map
+     */
+    private void addSearchRadiusCircle() {
+        if (mMap != null && currentUserLocation != null) {
+            // Remove existing circle
+            if (searchRadiusCircle != null) {
+                searchRadiusCircle.remove();
+            }
+
+            // Add new circle
+            searchRadiusCircle = mMap.addCircle(new CircleOptions()
+                    .center(currentUserLocation)
+                    .radius(SEARCH_RADIUS_KM * 1000) // Convert km to meters
+                    .strokeColor(0x330000FF)
+                    .fillColor(0x110000FF)
+                    .strokeWidth(2));
+        }
+    }
+
+    /**
+     * Update user location marker on map
+     */
+    private void updateUserLocationOnMap() {
+        if (currentUserLocation != null) {
+            addSearchRadiusCircle();
+        }
+    }
+
+    /**
+     * Fetch nearby buses using real-time data
+     */
+    private void fetchNearbyBuses() {
+        if (currentUserLocation == null) return;
+
+        showProgress(true);
+
+        executorService.execute(() -> {
+            try {
+                List<BusInfo> buses = new ArrayList<>();
+
+                // Try multiple data sources for comprehensive coverage
+                fetchFromGTFS(buses);
+                fetchFromOpenData(buses);
+                fetchFromTransitLand(buses);
+
+                mainHandler.post(() -> {
+                    nearbyBuses.clear();
+                    nearbyBuses.addAll(buses);
+                    updateBusMarkersOnMap();
+                    updateUI();
+                    showProgress(false);
+
+                    if (buses.isEmpty()) {
+                        Toast.makeText(this, "No buses found nearby. Expanding search...", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Found " + buses.size() + " nearby buses", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching bus data: " + e.getMessage(), e);
+                mainHandler.post(() -> {
+                    showProgress(false);
+                    Toast.makeText(this, "Error fetching bus data", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
+    /**
+     * Fetch from GTFS Real-time feeds
+     */
+    private void fetchFromGTFS(List<BusInfo> buses) {
+        try {
+            // Example GTFS-RT URL (replace with your local transit authority's feed)
+            String gtfsUrl = "https://api.transitland.org/api/v2/rest/vehicles"
+                    + "?lat=" + currentUserLocation.latitude
+                    + "&lon=" + currentUserLocation.longitude
+                    + "&radius=" + (SEARCH_RADIUS_KM * 1000);
+
+            String jsonResponse = makeHttpRequest(gtfsUrl);
+            if (jsonResponse != null) {
+                parseGTFSResponse(jsonResponse, buses);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching GTFS data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Fetch from Open Data APIs
+     */
+    private void fetchFromOpenData(List<BusInfo> buses) {
+        try {
+            // For Singapore (since user is in Singapore)
+            if (isInSingapore()) {
+                fetchSingaporeTransitData(buses);
+            }
+
+            // Add more regional APIs as needed
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching open data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Check if user is in Singapore
+     */
+    private boolean isInSingapore() {
+        if (currentUserLocation == null) return false;
+        // Singapore bounds approximately
+        return currentUserLocation.latitude >= 1.16 && currentUserLocation.latitude <= 1.48 &&
+                currentUserLocation.longitude >= 103.6 && currentUserLocation.longitude <= 104.1;
+    }
+
+    /**
+     * Fetch Singapore transit data
+     */
+    private void fetchSingaporeTransitData(List<BusInfo> buses) {
+        try {
+            // Use LTA DataMall API for Singapore bus data
+            // Note: You'll need to register for API key at datamall.lta.gov.sg
+            String apiKey = "YOUR_LTA_API_KEY"; // Replace with actual API key
+
+            if (!"YOUR_LTA_API_KEY".equals(apiKey)) {
+                String url = "http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2";
+                // Implementation for Singapore LTA API
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching Singapore data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Fetch from TransitLand API
+     */
+    private void fetchFromTransitLand(List<BusInfo> buses) {
+        try {
+            String url = "https://transit.land/api/v2/rest/stops"
+                    + "?lat=" + currentUserLocation.latitude
+                    + "&lon=" + currentUserLocation.longitude
+                    + "&radius=" + (SEARCH_RADIUS_KM * 1000);
+
+            String jsonResponse = makeHttpRequest(url);
+            if (jsonResponse != null) {
+                parseTransitLandResponse(jsonResponse, buses);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching TransitLand data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Make HTTP request
+     */
+    private String makeHttpRequest(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+
+            reader.close();
+            connection.disconnect();
+
+            return response.toString();
+
+        } catch (Exception e) {
+            Log.e(TAG, "HTTP request error: " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Parse GTFS response
+     */
+    private void parseGTFSResponse(String jsonResponse, List<BusInfo> buses) {
+        try {
+            JSONObject json = new JSONObject(jsonResponse);
+            JSONArray vehicles = json.optJSONArray("vehicles");
+
+            if (vehicles != null) {
+                for (int i = 0; i < vehicles.length(); i++) {
+                    JSONObject vehicle = vehicles.getJSONObject(i);
+                    BusInfo bus = parseBusFromVehicle(vehicle);
+                    if (bus != null) {
+                        buses.add(bus);
+                    }
                 }
             }
-        }
-
-        // Add route path
-        addRoutePathToMap();
-    }
-
-    /**
-     * Add route path visualization to map
-     */
-    private void addRoutePathToMap() {
-        // Route 245 path coordinates (Negombo to Colombo)
-        LatLng[] routePath = {
-                new LatLng(6.9271, 79.8612), // Negombo Bus Station
-                new LatLng(6.9541, 79.8648), // Ja-Ela
-                new LatLng(7.0123, 79.8789), // Wattala
-                new LatLng(7.0873, 79.8956), // Kelaniya
-                new LatLng(7.1564, 79.9123), // Peliyagoda
-                new LatLng(7.2456, 79.9234), // Dematagoda
-                new LatLng(7.2906, 79.9085)  // Colombo Fort
-        };
-
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .color(ContextCompat.getColor(this, R.color.route_path_color))
-                .width(8f);
-
-        for (LatLng point : routePath) {
-            polylineOptions.add(point);
-        }
-
-        mMap.addPolyline(polylineOptions);
-
-        // Add bus stops
-        addBusStopsToMap(routePath);
-    }
-
-    /**
-     * Add bus stops to map
-     */
-    private void addBusStopsToMap(LatLng[] stops) {
-        String[] stopNames = {
-                "Negombo Bus Station",
-                "Ja-Ela Junction",
-                "Wattala Bus Stand",
-                "Kelaniya Temple",
-                "Peliyagoda",
-                "Dematagoda Railway",
-                "Colombo Fort"
-        };
-
-        for (int i = 0; i < stops.length; i++) {
-            MarkerOptions stopMarker = new MarkerOptions()
-                    .position(stops[i])
-                    .title(stopNames[i])
-                    .snippet("Route 245 Stop")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bus_stop_marker));
-
-            mMap.addMarker(stopMarker);
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing GTFS response: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Select a bus and update UI
+     * Parse TransitLand response
      */
-    private void selectBus(Marker marker) {
-        selectedBusMarker = marker;
-        String busTag = marker.getTag().toString();
-        String busNumber = busTag.replace("bus_", "");
+    private void parseTransitLandResponse(String jsonResponse, List<BusInfo> buses) {
+        try {
+            JSONObject json = new JSONObject(jsonResponse);
+            JSONArray stops = json.optJSONArray("stops");
 
-        updateBusInformationPanel(busNumber);
-
-        // Animate camera to selected bus
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                marker.getPosition(), 15f));
-    }
-
-    /**
-     * Update bus information panel
-     */
-    private void updateBusInformationPanel(String busNumber) {
-        selectedBusId = busNumber;
-
-        // Update UI with selected bus data
-        textViewSelectedRoute.setText("Route 245");
-        textViewBusNumber.setText("Bus " + busNumber);
-        textViewDestination.setText("Colombo Fort");
-
-        // Simulated real-time data
-        switch (busNumber) {
-            case "WP-CM-5847":
-                textViewCurrentCapacity.setText("78% Full");
-                textViewEstimatedArrival.setText("5 minutes");
-                textViewNextStop.setText("Ja-Ela Junction");
-                textViewDistance.setText("2.3 km away");
-                break;
-            case "WP-BM-2341":
-                textViewCurrentCapacity.setText("45% Full");
-                textViewEstimatedArrival.setText("12 minutes");
-                textViewNextStop.setText("Wattala Bus Stand");
-                textViewDistance.setText("5.8 km away");
-                break;
-            case "WP-KB-8765":
-                textViewCurrentCapacity.setText("92% Full");
-                textViewEstimatedArrival.setText("18 minutes");
-                textViewNextStop.setText("Peliyagoda");
-                textViewDistance.setText("8.2 km away");
-                break;
-            case "WP-CD-1234":
-                textViewCurrentCapacity.setText("56% Full");
-                textViewEstimatedArrival.setText("25 minutes");
-                textViewNextStop.setText("Colombo Fort");
-                textViewDistance.setText("12.1 km away");
-                break;
+            if (stops != null) {
+                for (int i = 0; i < stops.length(); i++) {
+                    JSONObject stop = stops.getJSONObject(i);
+                    BusInfo bus = parseBusFromStop(stop);
+                    if (bus != null) {
+                        buses.add(bus);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing TransitLand response: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Center map on route
+     * Parse bus info from vehicle data
      */
-    private void centerMapOnRoute() {
-        // Center on Kelaniya (middle of route)
-        LatLng routeCenter = new LatLng(7.0873, 79.8956);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routeCenter, 12f));
+    private BusInfo parseBusFromVehicle(JSONObject vehicle) {
+        try {
+            JSONObject position = vehicle.optJSONObject("position");
+            if (position != null) {
+                double lat = position.optDouble("latitude");
+                double lon = position.optDouble("longitude");
+                String routeId = vehicle.optString("route_id", "Unknown");
+                String vehicleId = vehicle.optString("vehicle_id", "");
+
+                return new BusInfo(routeId, vehicleId, lat, lon, "Live", "Real-time");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing vehicle: " + e.getMessage(), e);
+        }
+        return null;
     }
 
     /**
-     * Update map with user location
+     * Parse bus info from stop data
      */
-    private void updateMapWithUserLocation() {
-        if (currentLocation != null && mMap != null) {
-            LatLng userLatLng = new LatLng(currentLocation.getLatitude(),
-                    currentLocation.getLongitude());
+    private BusInfo parseBusFromStop(JSONObject stop) {
+        try {
+            JSONObject geometry = stop.optJSONObject("geometry");
+            if (geometry != null) {
+                JSONArray coordinates = geometry.optJSONArray("coordinates");
+                if (coordinates != null && coordinates.length() >= 2) {
+                    double lon = coordinates.getDouble(0);
+                    double lat = coordinates.getDouble(1);
+                    String stopName = stop.optString("stop_name", "Bus Stop");
 
-            if (userLocationMarker != null) {
-                userLocationMarker.remove();
+                    return new BusInfo("Bus Stop", stopName, lat, lon, "Stop", "Active");
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing stop: " + e.getMessage(), e);
+        }
+        return null;
+    }
+
+    /**
+     * Update bus markers on map
+     */
+    private void updateBusMarkersOnMap() {
+        if (mMap == null) return;
+
+        // Clear existing bus markers
+        for (Marker marker : busMarkers) {
+            marker.remove();
+        }
+        busMarkers.clear();
+
+        // Add new bus markers
+        for (BusInfo bus : nearbyBuses) {
+            LatLng position = new LatLng(bus.latitude, bus.longitude);
+
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(position)
+                    .title(bus.routeNumber)
+                    .snippet(bus.destination + " • " + bus.status);
+
+            // Different colors for different types
+            if ("Bus Stop".equals(bus.routeNumber)) {
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            } else {
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             }
 
-            userLocationMarker = mMap.addMarker(new MarkerOptions()
-                    .position(userLatLng)
-                    .title("Your Location")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_location)));
+            Marker marker = mMap.addMarker(markerOptions);
+            busMarkers.add(marker);
         }
     }
 
     /**
-     * Toggle arrival notification
+     * Refresh bus data manually
      */
-    private void toggleArrivalNotification() {
-        isNotificationEnabled = !isNotificationEnabled;
-
-        String message = isNotificationEnabled ?
-                "You'll be notified when " + selectedBusId + " approaches" :
-                "Arrival notifications disabled for " + selectedBusId;
-
-        buttonNotifyArrival.setText(isNotificationEnabled ?
-                "Cancel Notification" : "Notify When Arriving");
-
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-
-        saveTrackingPreferences();
-    }
-
-    /**
-     * Share current location with others
-     */
-    private void shareCurrentLocation() {
-        if (currentLocation != null) {
-            String shareText = "I'm tracking Bus " + selectedBusId + " on Route " + selectedRouteNumber +
-                    " via BusMate. My location: https://maps.google.com/?q=" +
-                    currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "BusMate - Live Bus Tracking");
-
-            startActivity(Intent.createChooser(shareIntent, "Share location via"));
+    private void refreshBusData() {
+        if (currentUserLocation != null) {
+            fetchNearbyBuses();
+            Toast.makeText(this, "Refreshing bus data...", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Unable to get current location", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * Report bus issue
+     * Show/hide progress indicator
      */
-    private void reportBusIssue() {
-        // TODO: Implement issue reporting
-        Toast.makeText(this, "Issue reporting for Bus " + selectedBusId + " - Coming Soon",
-                Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Contact bus driver
-     */
-    private void contactBusDriver() {
-        Intent intent = new Intent(this, DriverCommunicationActivity.class);
-        intent.putExtra("bus_number", selectedBusId);
-        intent.putExtra("route_number", selectedRouteNumber);
-        startActivity(intent);
-    }
-
-    /**
-     * Show detailed bus information
-     */
-    private void showBusDetails() {
-        Intent intent = new Intent(this, BusDetailsActivity.class);
-        intent.putExtra("bus_number", selectedBusId);
-        intent.putExtra("route_number", selectedRouteNumber);
-        startActivity(intent);
-    }
-
-    /**
-     * Load tracking preferences
-     */
-    private void loadTrackingPreferences() {
-        isNotificationEnabled = sharedPreferences.getBoolean("arrival_notifications", false);
-        switchNotifications.setChecked(isNotificationEnabled);
-    }
-
-    /**
-     * Save tracking preferences
-     */
-    private void saveTrackingPreferences() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("arrival_notifications", isNotificationEnabled);
-        editor.apply();
-    }
-
-    /**
-     * Load bus tracking data
-     */
-    private void loadBusTrackingData() {
-        // Get route from intent or use default
-        selectedRouteNumber = getIntent().getStringExtra("route_number");
-        if (selectedRouteNumber == null) {
-            selectedRouteNumber = "245";
+    private void showProgress(boolean show) {
+        if (progressBar != null) {
+            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         }
-
-        textViewSelectedRoute.setText("Route " + selectedRouteNumber);
     }
 
+    /**
+     * Handle permission request results
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -500,33 +717,65 @@ public class LiveBusTrackingActivity extends AppCompatActivity implements OnMapR
 
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
-                if (mMap != null) {
-                    try {
-                        mMap.setMyLocationEnabled(true);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-                }
+                enableLocationTracking();
+                Toast.makeText(this, "Location permission granted", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Location permission required for live tracking",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Location permission required for live tracking", Toast.LENGTH_LONG).show();
+                finish();
             }
         }
+    }
+
+    /**
+     * Show error and finish activity
+     */
+    private void showErrorAndFinish(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isTrackingActive && currentUserLocation != null) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (databaseHelper != null) {
-            databaseHelper.close();
+        stopLocationUpdates();
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
         }
+        Log.d(TAG, "Enhanced LiveBusTrackingActivity destroyed");
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, PassengerDashboardActivity.class);
-        startActivity(intent);
-        finish();
+    /**
+     * Bus information data class
+     */
+    private static class BusInfo {
+        String routeNumber;
+        String destination;
+        double latitude;
+        double longitude;
+        String status;
+        String eta;
+
+        BusInfo(String routeNumber, String destination, double latitude, double longitude, String status, String eta) {
+            this.routeNumber = routeNumber;
+            this.destination = destination;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.status = status;
+            this.eta = eta;
+        }
     }
 }
