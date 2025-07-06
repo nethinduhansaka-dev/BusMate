@@ -73,6 +73,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <!-- Vector drawable support -->
+        <meta-data
+            android:name="android.graphics.drawable.vector.compat"
+            android:value="true" />
+
         <!-- Google Play Services Version -->
         <meta-data
             android:name="com.google.android.gms.version"
@@ -237,7 +242,7 @@
             android:taskAffinity="com.s23010421.busmate.emergency"
             android:excludeFromRecents="false" />
 
-        <!-- Add this activity inside the <application> tag -->
+
         <activity
             android:name=".ContactDriverActivity"
             android:exported="false"
@@ -245,12 +250,26 @@
             android:theme="@style/Theme.BusMate"
             android:parentActivityName=".LiveBusTrackingActivity" />
 
+        <activity
+            android:name=".PersonalInfoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate" />
+
+
 
 
 
         <!-- Real-Time Bus Tracking System (Lab Session 3) -->
         <activity
             android:name=".LiveBusTrackingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BusMate"
+            android:parentActivityName=".PassengerDashboardActivity" />
+
+        <activity
+            android:name=".MapActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.BusMate"

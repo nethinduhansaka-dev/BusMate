@@ -5,22 +5,55 @@
 
     <!-- Existing colors -->
     <color name="colorPrimary">#007BFF</color>
-    <color name="colorPrimaryDark">#0056B3</color>
-    <color name="colorAccent">#FF5722</color>
+    
+    <!-- Material Design 3 Colors -->
+    <color name="primary">#007BFF</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#CCE7FF</color>
+    <color name="on_primary_container">#001E2E</color>
+    
+    <color name="secondary">#4A90E2</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_container">#D9E7FF</color>
+    <color name="on_secondary_container">#0A1929</color>
+    
+    <color name="surface">#FFFFFF</color>
+    <color name="on_surface">#191C20</color>
+    <color name="surface_variant">#E0E2EC</color>
+    <color name="on_surface_variant">#686878</color>
+    
+    <color name="outline">#79747E</color>
+    <color name="outline_variant">#CAC4D0</color>
 
     <!-- BusMate specific colors -->
     <color name="route_path_color">#007BFF</color>
     <color name="bus_marker_color">#FF5722</color>
     <color name="stop_marker_color">#4CAF50</color>
-    <color name="user_location_color">#2196F3</color>
-    <color name="warning_color">#FF9800</color>
-    <color name="success_color">#4CAF50</color>
     <color name="danger_color">#F44336</color>
 
     <!-- Background colors -->
-    <color name="tracking_header_bg">#E3F2FD</color>
-    <color name="selection_bg">#FAFAFA</color>
-    <color name="card_border">#E0E0E0</color>
+
+
+    <!-- Gray Variations for BusMate Theme -->
+    <color name="gray_light">#E0E0E0</color>
+
+    <!-- Emergency Colors -->
+
+    <!-- Success/Live Colors -->
+
+    <!-- Warning Colors -->
+
+    <!-- Primary Blue (for links and actions) -->
+
+    <!-- Background Colors -->
+    <color name="background_gray">#F5F5F5</color>
+
+    <!-- Bottom Navigation Colors -->
+
+
+    <!-- FIXED: Missing Route Colors -->
+
+
 </resources>
 
 

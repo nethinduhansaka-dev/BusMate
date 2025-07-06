@@ -13,12 +13,12 @@
 
     <item
         android:id="@+id/navigation_tickets"
-        android:icon="@drawable/ic_ticket"
+        android:icon="@drawable/ic_tickets"
         android:title="Tickets" />
 
     <item
         android:id="@+id/navigation_trips"
-        android:icon="@drawable/ic_trip"
+        android:icon="@drawable/ic_trips"
         android:title="Trips" />
 
     <item

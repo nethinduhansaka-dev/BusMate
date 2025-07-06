@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="8dp"
+            android:height="8dp"
+            android:viewportWidth="8"
+            android:viewportHeight="8">
+
+            <!-- Outer pulse ring -->
+            <group android:name="pulse_group">
+                <path
+                    android:name="pulse_ring"
+                    android:pathData="M4,1 C5.66,1 7,2.34 7,4 C7,5.66 5.66,7 4,7 C2.34,7 1,5.66 1,4 C1,2.34 2.34,1 4,1 Z"
+                    android:fillColor="#4CAF50"
+                    android:fillAlpha="0.3" />
+            </group>
+
+            <!-- Inner solid dot -->
+            <path
+                android:name="solid_dot"
+                android:pathData="M4,2 C5.1,2 6,2.9 6,4 C6,5.1 5.1,6 4,6 C2.9,6 2,5.1 2,4 C2,2.9 2.9,2 4,2 Z"
+                android:fillColor="#4CAF50" />
+
+        </vector>
+    </aapt:attr>
+
+    <!-- Pulse Animation -->
+    <target android:name="pulse_group">
+        <aapt:attr name="android:animation">
+            <set android:ordering="together">
+                <!-- Scale animation -->
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="1000"
+                    android:valueFrom="1.0"
+                    android:valueTo="1.5"
+                    android:repeatCount="infinite"
+                    android:repeatMode="restart"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator" />
+
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1000"
+                    android:valueFrom="1.0"
+                    android:valueTo="1.5"
+                    android:repeatCount="infinite"
+                    android:repeatMode="restart"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator" />
+
+                <!-- Alpha animation -->
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:duration="1000"
+                    android:valueFrom="0.3"
+                    android:valueTo="0.0"
+                    android:repeatCount="infinite"
+                    android:repeatMode="restart"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator" />
+            </set>
+        </aapt:attr>
+    </target>
+
+</animated-vector>

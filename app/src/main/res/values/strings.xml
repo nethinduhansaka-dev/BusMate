@@ -3,13 +3,9 @@
     <string name="already_have_account">Already have an account? <font color="#007BFF">Sign In</font></string>
 
 
-    <string name="google_maps_key">AIzaSyAO2T3BYmlRtBbjZDywCDsdInXVePcH94Q</string>
+    <string name="google_maps_key">AIzaSyDa8NGAPMYWUDnrcBaSRAIStV6NOWmBluA</string>
 
     <!-- Navigation strings -->
-    <string name="track_bus_short">Track Bus</string>
-    <string name="track_bus_long">Track live bus location</string>
-    <string name="emergency_short">Emergency</string>
-    <string name="emergency_long">Emergency assistance</string>
 
 </resources>
 

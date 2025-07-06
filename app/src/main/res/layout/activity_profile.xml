@@ -83,7 +83,7 @@
                             android:id="@+id/imageViewProfilePhoto"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@android:drawable/ic_menu_gallery"
+                            android:src="@drawable/ic_avatar"
                             android:scaleType="centerCrop"
                             android:background="#E8E8E8"
                             android:contentDescription="Profile Photo" />

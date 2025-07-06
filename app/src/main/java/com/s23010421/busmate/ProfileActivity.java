@@ -265,7 +265,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Profile cards click listeners
             if (cardViewPersonalInfo != null) {
                 cardViewPersonalInfo.setOnClickListener(v -> {
-                    Toast.makeText(this, "Personal Information", Toast.LENGTH_SHORT).show();
+                    navigateToPersonalInfo();
                 });
             }
 
@@ -297,6 +297,35 @@ public class ProfileActivity extends AppCompatActivity {
             Log.e(TAG, "Error setting up click listeners: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Navigate to Personal Information Activity
+     */
+    /**
+     * Navigate to Personal Information Activity
+     */
+    private void navigateToPersonalInfo() {
+        try {
+            Intent intent = new Intent(ProfileActivity.this, PersonalInfoActivity.class);
+
+            // Pass user data to PersonalInfoActivity
+            intent.putExtra("user_id", passengerId);
+            intent.putExtra("user_email", passengerEmail);
+            intent.putExtra("user_name", passengerName);
+
+            // Start the activity with smooth transition
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            Log.d(TAG, "Navigating to PersonalInfoActivity for user ID: " + passengerId);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error navigating to personal info: " + e.getMessage(), e);
+            Toast.makeText(this, "Error opening personal information", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     /**
      * Show travel statistics dialog

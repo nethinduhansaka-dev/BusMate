@@ -28,7 +28,6 @@
                 android:layout_marginBottom="24dp">
 
                 <TextView
-                    android:id="@+id/buttonBackToSignIn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="← Back"
@@ -192,21 +191,18 @@
                     android:layout_marginBottom="8dp">
 
                     <RadioButton
-                        android:id="@+id/radioButtonMale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Male"
                         android:layout_marginEnd="24dp" />
 
                     <RadioButton
-                        android:id="@+id/radioButtonFemale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Female"
                         android:layout_marginEnd="24dp" />
 
                     <RadioButton
-                        android:id="@+id/radioButtonOther"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Other" />
@@ -428,7 +424,6 @@
                     android:layout_marginBottom="8dp" />
 
                 <CheckBox
-                    android:id="@+id/checkBoxBusArrivalAlerts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bus arrival alerts"
@@ -436,7 +431,6 @@
                     android:checked="true" />
 
                 <CheckBox
-                    android:id="@+id/checkBoxServiceUpdates"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Service updates and announcements"
@@ -505,7 +499,6 @@
 
                 <!-- Required Agreements -->
                 <CheckBox
-                    android:id="@+id/checkBoxTermsConditions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="I agree to the Terms &amp; Conditions"
@@ -513,7 +506,6 @@
                     android:layout_marginBottom="8dp" />
 
                 <CheckBox
-                    android:id="@+id/checkBoxPrivacyPolicy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="I agree to the Privacy Policy"
@@ -521,7 +513,6 @@
                     android:layout_marginBottom="8dp" />
 
                 <CheckBox
-                    android:id="@+id/checkBoxLocationServices"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="I consent to location tracking for bus services"
@@ -530,7 +521,6 @@
 
                 <!-- Optional Agreement -->
                 <CheckBox
-                    android:id="@+id/checkBoxMarketingCommunications"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="I'd like to receive promotional offers (optional)"

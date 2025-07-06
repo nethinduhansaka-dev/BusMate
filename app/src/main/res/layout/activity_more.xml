@@ -33,7 +33,7 @@
                     android:id="@+id/imageViewProfilePicture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_profile_placeholder"
+                    android:src="@drawable/ic_avatar"
                     android:scaleType="centerCrop"
                     android:background="#F0F0F0" />
 
