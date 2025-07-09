@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +89,38 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setupFloatingButtons();
         setupSearchView();
         checkLocationPermission();
+
+        // --- Bottom Navigation Setup ---
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationPassenger);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_map);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_home) {
+                startActivity(new Intent(this, PassengerDashboardActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.navigation_map) {
+                // Already on Map
+                return true;
+            } else if (itemId == R.id.navigation_tickets) {
+                startActivity(new Intent(this, TicketBookingActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.navigation_trips) {
+                startActivity(new Intent(this, TripHistoryActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.navigation_more) {
+                startActivity(new Intent(this, MoreActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            return false;
+        });
     }
 
     /**
@@ -262,20 +295,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Add bus stops to the map
      */
     private void addBusStops() {
-        if (mMap == null) return;
+        if (mMap == null)
+            return;
 
         // Sample bus stops in Negombo area
         BusStopInfo[] busStops = {
                 new BusStopInfo("1", "Negombo Bus Station", "Main Street, Negombo",
-                        7.2906, 79.9000, new String[]{"245", "187"}),
+                        7.2906, 79.9000, new String[] { "245", "187" }),
                 new BusStopInfo("2", "Hospital Junction", "Negombo-Colombo Rd",
-                        7.2800, 79.9100, new String[]{"245"}),
+                        7.2800, 79.9100, new String[] { "245" }),
                 new BusStopInfo("3", "Market Square", "Dalukanda Junction",
-                        7.2700, 79.9200, new String[]{"187"}),
+                        7.2700, 79.9200, new String[] { "187" }),
                 new BusStopInfo("4", "Railway Station", "Station Road",
-                        7.2600, 79.9300, new String[]{"245", "187"}),
+                        7.2600, 79.9300, new String[] { "245", "187" }),
                 new BusStopInfo("5", "St. Mary's Church", "Church Street",
-                        7.2500, 79.9400, new String[]{"245"})
+                        7.2500, 79.9400, new String[] { "245" })
         };
 
         for (BusStopInfo busStop : busStops) {
@@ -298,7 +332,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Add bus routes to the map
      */
     private void addBusRoutes() {
-        if (mMap == null) return;
+        if (mMap == null)
+            return;
 
         // Route 245 (Blue)
         List<LatLng> route245 = new ArrayList<>();
@@ -332,7 +367,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Add live buses to the map
      */
     private void addLiveBuses() {
-        if (mMap == null) return;
+        if (mMap == null)
+            return;
 
         // Bus 245
         LatLng bus245Position = new LatLng(7.2850, 79.9050);
@@ -374,8 +410,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 marker.getSnippet(),
                 marker.getPosition().latitude,
                 marker.getPosition().longitude,
-                new String[]{"245", "187"}
-        );
+                new String[] { "245", "187" });
 
         // Update bottom sheet content
         updateBottomSheetContent();
@@ -403,7 +438,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Update bottom sheet content with selected bus stop info
      */
     private void updateBottomSheetContent() {
-        if (selectedBusStopInfo == null) return;
+        if (selectedBusStopInfo == null)
+            return;
 
         // Update TextViews in bottom sheet with bus stop information
         // This would reference TextViews in the bottom sheet layout
@@ -428,8 +464,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (mMap != null && currentLocation != null) {
             LatLng userLocation = new LatLng(
                     currentLocation.getLatitude(),
-                    currentLocation.getLongitude()
-            );
+                    currentLocation.getLongitude());
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16.0f));
             Toast.makeText(this, "Centered on your location", Toast.LENGTH_SHORT).show();
         } else {
@@ -497,12 +532,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Check location permission
      */
     private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             enableLocationServices();
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
@@ -528,13 +563,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     private void startLocationUpdates() {
         try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 fusedLocationClient.requestLocationUpdates(
                         locationRequest,
                         locationCallback,
-                        Looper.getMainLooper()
-                );
+                        Looper.getMainLooper());
             }
         } catch (SecurityException e) {
             Log.e(TAG, "Security exception starting location updates: " + e.getMessage());
@@ -546,8 +580,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     private void getCurrentLocation() {
         try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 fusedLocationClient.getLastLocation()
                         .addOnSuccessListener(this, location -> {
                             if (location != null) {
@@ -562,7 +596,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {

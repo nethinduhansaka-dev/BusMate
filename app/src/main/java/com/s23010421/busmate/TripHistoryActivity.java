@@ -51,6 +51,38 @@ public class TripHistoryActivity extends AppCompatActivity {
             setupClickListeners();
             updateTripDisplay();
 
+            // --- Bottom Navigation Setup ---
+            com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigationView = findViewById(
+                    R.id.bottomNavigationPassenger);
+            bottomNavigationView.setSelectedItemId(R.id.navigation_trips);
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.navigation_home) {
+                    startActivity(new Intent(this, PassengerDashboardActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_map) {
+                    startActivity(new Intent(this, MapActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_tickets) {
+                    startActivity(new Intent(this, TicketBookingActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_trips) {
+                    // Already on Trips
+                    return true;
+                } else if (itemId == R.id.navigation_more) {
+                    startActivity(new Intent(this, MoreActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            });
         } catch (Exception e) {
             Log.e(TAG, "Error in onCreate: " + e.getMessage(), e);
             showErrorAndFinish("Error loading trip history");
@@ -79,22 +111,18 @@ public class TripHistoryActivity extends AppCompatActivity {
         // JUNE 2025 trips
         allTrips.add(new TripRecord(
                 "Downtown → Airport", "Today, 2:30 PM", "45 min", "$12.50",
-                "Route 42A", "Card", 5.0f, "JUNE 2025"
-        ));
+                "Route 42A", "Card", 5.0f, "JUNE 2025"));
         allTrips.add(new TripRecord(
                 "Home → Office", "Yesterday, 8:15 AM", "32 min", "$8.75",
-                "Route 15B", "Cash", 4.0f, "JUNE 2025"
-        ));
+                "Route 15B", "Cash", 4.0f, "JUNE 2025"));
         allTrips.add(new TripRecord(
                 "Mall → Home", "Jun 16, 6:45 PM", "28 min", "$6.25",
-                "Route 23", "Mobile", 5.0f, "JUNE 2025"
-        ));
+                "Route 23", "Mobile", 5.0f, "JUNE 2025"));
 
         // MAY 2025 trips
         allTrips.add(new TripRecord(
                 "Airport → Downtown", "May 28, 3:20 PM", "38 min", "$11.00",
-                "Route 42A", "Card", 3.0f, "MAY 2025"
-        ));
+                "Route 42A", "Card", 3.0f, "MAY 2025"));
     }
 
     /**
@@ -215,8 +243,7 @@ public class TripHistoryActivity extends AppCompatActivity {
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         params.topMargin = 32;
         params.bottomMargin = 16;
         params.leftMargin = 16;
@@ -233,8 +260,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         CardView cardView = new CardView(this);
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         cardParams.setMargins(16, 8, 16, 8);
         cardView.setLayoutParams(cardParams);
         cardView.setCardElevation(4);
@@ -258,8 +284,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         routeText.setTextColor(getResources().getColor(android.R.color.black));
         routeText.setTypeface(null, android.graphics.Typeface.BOLD);
         LinearLayout.LayoutParams routeParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
-        );
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         routeText.setLayoutParams(routeParams);
 
         // Price
@@ -278,8 +303,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         detailsRow.setGravity(android.view.Gravity.CENTER_VERTICAL);
         LinearLayout.LayoutParams detailsParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         detailsParams.topMargin = 4;
         detailsParams.bottomMargin = 4;
         detailsRow.setLayoutParams(detailsParams);
@@ -290,8 +314,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         dateTimeText.setTextSize(14);
         dateTimeText.setTextColor(getResources().getColor(android.R.color.darker_gray));
         LinearLayout.LayoutParams dateTimeParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
-        );
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         dateTimeText.setLayoutParams(dateTimeParams);
 
         // Duration
@@ -309,8 +332,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         paymentRow.setGravity(android.view.Gravity.CENTER_VERTICAL);
         LinearLayout.LayoutParams paymentParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         paymentParams.topMargin = 4;
         paymentParams.bottomMargin = 12;
         paymentRow.setLayoutParams(paymentParams);
@@ -321,8 +343,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         routePaymentText.setTextSize(12);
         routePaymentText.setTextColor(getResources().getColor(android.R.color.darker_gray));
         LinearLayout.LayoutParams routePaymentParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
-        );
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         routePaymentText.setLayoutParams(routePaymentParams);
 
         // Rating
@@ -347,8 +368,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         receiptButton.setTextColor(getResources().getColor(android.R.color.black));
         receiptButton.setBackground(createButtonBorder());
         LinearLayout.LayoutParams receiptParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, 80
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT, 80);
         receiptParams.rightMargin = 12;
         receiptButton.setLayoutParams(receiptParams);
         receiptButton.setOnClickListener(v -> showReceipt(trip));
@@ -360,8 +380,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         repeatButton.setTextColor(getResources().getColor(android.R.color.black));
         repeatButton.setBackground(createButtonBorder());
         LinearLayout.LayoutParams repeatParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, 80
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT, 80);
         repeatButton.setLayoutParams(repeatParams);
         repeatButton.setOnClickListener(v -> repeatTrip(trip));
 
@@ -382,8 +401,7 @@ public class TripHistoryActivity extends AppCompatActivity {
      * Create button border for action buttons
      */
     private android.graphics.drawable.Drawable createButtonBorder() {
-        android.graphics.drawable.GradientDrawable drawable =
-                new android.graphics.drawable.GradientDrawable();
+        android.graphics.drawable.GradientDrawable drawable = new android.graphics.drawable.GradientDrawable();
         drawable.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
         drawable.setColor(getResources().getColor(android.R.color.white));
         drawable.setStroke(2, getResources().getColor(android.R.color.darker_gray));
@@ -448,7 +466,7 @@ public class TripHistoryActivity extends AppCompatActivity {
         String month;
 
         TripRecord(String route, String dateTime, String duration, String price,
-                   String routeNumber, String paymentMethod, float rating, String month) {
+                String routeNumber, String paymentMethod, float rating, String month) {
             this.route = route;
             this.dateTime = dateTime;
             this.duration = duration;

@@ -330,4 +330,18 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Add Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationPassenger"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        app:elevation="16dp"
+        app:menu="@menu/bottom_navigation_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemTextColor="@color/bottom_nav_selector"
+        app:itemActiveIndicatorStyle="@style/App.BottomNavigationView.ActiveIndicator" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

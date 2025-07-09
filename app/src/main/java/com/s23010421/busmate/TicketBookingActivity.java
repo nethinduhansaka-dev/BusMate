@@ -56,6 +56,38 @@ public class TicketBookingActivity extends AppCompatActivity {
             setupClickListeners();
             loadAvailableBuses();
 
+            // --- Bottom Navigation Setup ---
+            com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigationView = findViewById(
+                    R.id.bottomNavigationPassenger);
+            bottomNavigationView.setSelectedItemId(R.id.navigation_tickets);
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.navigation_home) {
+                    startActivity(new Intent(this, PassengerDashboardActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_map) {
+                    startActivity(new Intent(this, MapActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_tickets) {
+                    // Already on Tickets
+                    return true;
+                } else if (itemId == R.id.navigation_trips) {
+                    startActivity(new Intent(this, TripHistoryActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_more) {
+                    startActivity(new Intent(this, MoreActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            });
         } catch (Exception e) {
             Log.e(TAG, "Error in onCreate: " + e.getMessage(), e);
             showErrorAndFinish("Error loading ticket booking");
@@ -158,8 +190,7 @@ public class TicketBookingActivity extends AppCompatActivity {
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
+                calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
@@ -198,14 +229,13 @@ public class TicketBookingActivity extends AppCompatActivity {
      * Create bus card exactly matching the image design
      */
     private View createBusCard(String name, String price, String time,
-                               String duration, String seatsLeft, boolean isPrimary) {
+            String duration, String seatsLeft, boolean isPrimary) {
 
         // Create main card container
         CardView cardView = new CardView(this);
         LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         cardParams.setMargins(0, 0, 0, 16);
         cardView.setLayoutParams(cardParams);
         cardView.setCardElevation(8);
@@ -223,8 +253,7 @@ public class TicketBookingActivity extends AppCompatActivity {
         topRow.setGravity(android.view.Gravity.CENTER_VERTICAL);
         LinearLayout.LayoutParams topRowParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         topRowParams.bottomMargin = 8;
         topRow.setLayoutParams(topRowParams);
 
@@ -235,8 +264,7 @@ public class TicketBookingActivity extends AppCompatActivity {
         busName.setTextColor(getResources().getColor(android.R.color.black));
         busName.setTypeface(null, android.graphics.Typeface.BOLD);
         LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
-        );
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         busName.setLayoutParams(nameParams);
 
         // Price
@@ -256,8 +284,7 @@ public class TicketBookingActivity extends AppCompatActivity {
         busTime.setTextColor(getResources().getColor(android.R.color.darker_gray));
         LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         timeParams.bottomMargin = 4;
         busTime.setLayoutParams(timeParams);
 
@@ -268,8 +295,7 @@ public class TicketBookingActivity extends AppCompatActivity {
         busDuration.setTextColor(getResources().getColor(android.R.color.darker_gray));
         LinearLayout.LayoutParams durationParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         durationParams.bottomMargin = 16;
         busDuration.setLayoutParams(durationParams);
 
@@ -284,8 +310,7 @@ public class TicketBookingActivity extends AppCompatActivity {
         seatsLeftText.setTextSize(12);
         seatsLeftText.setTextColor(getResources().getColor(android.R.color.darker_gray));
         LinearLayout.LayoutParams seatsParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
-        );
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         seatsLeftText.setLayoutParams(seatsParams);
 
         // Select button
@@ -294,8 +319,7 @@ public class TicketBookingActivity extends AppCompatActivity {
         selectButton.setTextSize(16);
         selectButton.setTypeface(null, android.graphics.Typeface.BOLD);
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
-                200, 120
-        );
+                200, 120);
         selectButton.setLayoutParams(buttonParams);
 
         if (isPrimary) {
@@ -330,8 +354,7 @@ public class TicketBookingActivity extends AppCompatActivity {
      * Create button border for secondary select button
      */
     private android.graphics.drawable.Drawable createButtonBorder() {
-        android.graphics.drawable.GradientDrawable drawable =
-                new android.graphics.drawable.GradientDrawable();
+        android.graphics.drawable.GradientDrawable drawable = new android.graphics.drawable.GradientDrawable();
         drawable.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
         drawable.setColor(getResources().getColor(android.R.color.white));
         drawable.setStroke(2, getResources().getColor(android.R.color.black));

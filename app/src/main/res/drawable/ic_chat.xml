@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Chat bubble - main circle -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M12,3C17.04,3 21,6.96 21,12C21,17.04 17.04,21 12,21C10.45,21 9,20.64 7.73,20L3,21L4,16.27C3.36,15 3,13.55 3,12C3,6.96 6.96,3 12,3Z" />
+
+</vector>

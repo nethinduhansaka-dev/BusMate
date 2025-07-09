@@ -74,6 +74,39 @@ public class MoreActivity extends AppCompatActivity {
 
         // Set up click listeners
         setupClickListeners();
+
+        // --- Bottom Navigation Setup ---
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigationView = findViewById(
+                R.id.bottomNavigationPassenger);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_more);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_home) {
+                startActivity(new Intent(this, PassengerDashboardActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.navigation_map) {
+                startActivity(new Intent(this, MapActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.navigation_tickets) {
+                startActivity(new Intent(this, TicketBookingActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.navigation_trips) {
+                startActivity(new Intent(this, TripHistoryActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.navigation_more) {
+                // Already on More
+                return true;
+            }
+            return false;
+        });
     }
 
     /**
@@ -271,7 +304,8 @@ public class MoreActivity extends AppCompatActivity {
     private void showMembershipInfo() {
         new AlertDialog.Builder(this)
                 .setTitle("Membership Status")
-                .setMessage("Premium Member\n\nBenefits:\n• Priority booking\n• Exclusive routes\n• 20% discount on tickets\n• Premium customer support")
+                .setMessage(
+                        "Premium Member\n\nBenefits:\n• Priority booking\n• Exclusive routes\n• 20% discount on tickets\n• Premium customer support")
                 .setPositiveButton("OK", null)
                 .show();
     }
@@ -282,7 +316,8 @@ public class MoreActivity extends AppCompatActivity {
     private void showAboutBusMate() {
         new AlertDialog.Builder(this)
                 .setTitle("About BusMate")
-                .setMessage("BusMate - Smart Bus Travel Assistant\n\nVersion 2.1.0\n\nTransforming Public Transportation Through Innovation\n\nDeveloped for EEI4369 Course Project")
+                .setMessage(
+                        "BusMate - Smart Bus Travel Assistant\n\nVersion 2.1.0\n\nTransforming Public Transportation Through Innovation\n\nDeveloped for EEI4369 Course Project")
                 .setPositiveButton("Terms & Privacy", (dialog, which) -> {
                     Toast.makeText(this, "Terms & Privacy - Coming Soon", Toast.LENGTH_SHORT).show();
                 })

@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
+import android.widget.ImageButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -159,7 +161,6 @@ public class PassengerDashboardActivity extends AppCompatActivity {
             }
 
             setupClickListeners();
-            setupBottomNavigation();
             setupNearbyBusesSection();
             requestLocationPermission();
             setPersonalizedGreeting();
@@ -171,6 +172,74 @@ public class PassengerDashboardActivity extends AppCompatActivity {
             // Start weather updates
             startWeatherUpdates();
 
+            // --- Bottom Navigation Setup ---
+            com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigationView = findViewById(
+                    R.id.bottomNavigationPassenger);
+            bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+            bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.navigation_home) {
+                    // Already on Home
+                    return true;
+                } else if (itemId == R.id.navigation_map) {
+                    startActivity(new Intent(this, MapActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_tickets) {
+                    startActivity(new Intent(this, TicketBookingActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_trips) {
+                    startActivity(new Intent(this, TripHistoryActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.navigation_more) {
+                    startActivity(new Intent(this, MoreActivity.class)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            });
+
+            // --- Enhanced App Bar Setup: Customized white app bar with proper
+            // black-and-white theme ---
+            Toolbar toolbar = findViewById(R.id.toolbarPassengerDashboard);
+            setSupportActionBar(toolbar);
+
+            // Hide the default title since we're using a custom TextView for the app name
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+            }
+
+            // Set up app bar icon button click listeners with enhanced functionality
+            ImageButton btnSearch = findViewById(R.id.btnSearch);
+            ImageButton btnMessage = findViewById(R.id.btnMessage);
+            ImageButton btnNotification = findViewById(R.id.btnNotification);
+
+            // Search functionality - open search interface
+            btnSearch.setOnClickListener(v -> {
+                // TODO: Implement search functionality for finding buses, routes, stops
+                Toast.makeText(this, "🔍 Search functionality - Find buses, routes & stops", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "App Bar: Search button clicked");
+            });
+
+            // Message functionality - open messages/chat
+            btnMessage.setOnClickListener(v -> {
+                // TODO: Implement messaging functionality for customer support
+                Toast.makeText(this, "💬 Messages - Customer support & notifications", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "App Bar: Message button clicked");
+            });
+
+            // Notification functionality - open notifications panel
+            btnNotification.setOnClickListener(v -> {
+                // TODO: Implement notification center for alerts, updates, and announcements
+                Toast.makeText(this, "🔔 Notifications - Alerts & system updates", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "App Bar: Notification button clicked");
+            });
         } catch (Exception e) {
             Log.e(TAG, "Critical error in onCreate: " + e.getMessage(), e);
             showErrorAndRedirect("Dashboard initialization failed");
@@ -596,47 +665,6 @@ public class PassengerDashboardActivity extends AppCompatActivity {
     }
 
     /**
-     * UPDATED: Set up bottom navigation actions with separate Map and Live Tracking
-     */
-    /**
-     * Setup bottom navigation without profile tab
-     */
-    private void setupBottomNavigation() {
-        if (bottomNavigationView == null)
-            return;
-
-        try {
-            bottomNavigationView.setOnItemSelectedListener(item -> {
-                int itemId = item.getItemId();
-                if (itemId == R.id.navigation_home) {
-                    return true; // Already on home
-                } else if (itemId == R.id.navigation_map) {
-                    Intent mapIntent = new Intent(PassengerDashboardActivity.this, MapActivity.class);
-                    startActivity(mapIntent);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    return true;
-                } else if (itemId == R.id.navigation_trips) {
-                    Intent tripIntent = new Intent(PassengerDashboardActivity.this, TripHistoryActivity.class);
-                    tripIntent.putExtra("user_id", passengerId);
-                    startActivity(tripIntent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                    return true;
-                } else if (itemId == R.id.navigation_tickets) {
-                    navigateToTicketBooking();
-                    return true;
-                } else if (itemId == R.id.navigation_more) {
-                    navigateToMore();
-                    return true;
-                }
-                return false;
-            });
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error setting up bottom navigation: " + e.getMessage(), e);
-        }
-    }
-
-    /**
      * Start real-time bus updates
      */
     private void startBusUpdates() {
@@ -965,7 +993,7 @@ public class PassengerDashboardActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -1963,7 +1991,7 @@ public class PassengerDashboardActivity extends AppCompatActivity {
                 if (textViewCurrentLocation != null) {
                     String bestResult = combinedResult != null ? combinedResult
                             : (androidResult != null ? androidResult
-                            : (nominatimResult != null ? nominatimResult : areaResult));
+                                    : (nominatimResult != null ? nominatimResult : areaResult));
                     textViewCurrentLocation.setText("📍 " + bestResult);
                     Log.d(TAG, "✅ Final result displayed: " + bestResult);
                 }
