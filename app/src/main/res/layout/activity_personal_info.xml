@@ -57,21 +57,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Personal Information"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="#000000"
                             android:fontFamily="sans-serif-black" />
 
-                        <Button
-                            android:id="@+id/buttonEditProfile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:text="Edit"
-                            android:textSize="14sp"
-                            android:textColor="#E0E0E0"
-                            android:background="@drawable/btn_edit_selector"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp" />
+
 
                     </LinearLayout>
 
